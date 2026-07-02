@@ -26,6 +26,10 @@ body {
   font-family: 'PT Serif', 'Times New Roman', serif;
 }
 
+.word-shahodatnoma-page {
+  padding: 76mm 19.5mm 0 19mm;
+}
+
 .certificate-preview-bg {
   position: absolute;
   inset: 0;
@@ -39,11 +43,23 @@ body {
   user-select: none;
 }
 
-.certificate-overlay {
+.certificate-overlay,
+.word-certificate-overlay {
   position: absolute;
   inset: 0;
   z-index: 2;
   color: #000;
+}
+
+.word-certificate-overlay {
+  position: relative;
+  inset: auto;
+  z-index: 2;
+  width: 171.5mm;
+  font-family: 'Times New Roman', 'PT Serif', serif;
+  font-size: 12pt;
+  line-height: 1.08;
+  font-variant-numeric: tabular-nums;
 }
 
 .cert-box {
@@ -54,6 +70,159 @@ body {
   line-height: 1.15;
   white-space: normal;
   color: #000;
+}
+
+.word-p {
+  margin: 0;
+  padding: 0;
+  color: #000;
+  font-size: 12pt;
+  line-height: 1.08;
+}
+
+.word-p + .word-p {
+  margin-top: 1.2mm;
+}
+
+.center {
+  text-align: center;
+}
+
+.justify {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.bold,
+.strong-field {
+  font-weight: 700;
+}
+
+.valid-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 5.2mm;
+  font-size: 12pt;
+}
+
+.valid-title {
+  margin-right: 5mm;
+  font-size: 13pt;
+  font-weight: 700;
+}
+
+.number-valid-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4.5mm;
+  margin-top: 4mm;
+}
+
+.to-label {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.word-title-line {
+  margin-top: 3mm;
+  font-size: 14pt;
+  line-height: 1.12;
+}
+
+.block-field {
+  display: block !important;
+  margin-top: 0.3mm;
+}
+
+.word-field {
+  display: inline-block;
+  min-height: 4.2mm;
+  padding: 0 1mm;
+  border-bottom: 0.3mm solid #000;
+  vertical-align: baseline;
+  line-height: 1.05;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.word-caption {
+  margin: 0.4mm 0 1.1mm;
+  font-size: 9pt;
+  line-height: 1;
+  color: #000;
+}
+
+.law-block {
+  margin-top: 1.2mm;
+}
+
+.basis-block {
+  margin-top: 1mm;
+  text-indent: 8mm;
+}
+
+.responsibility-block {
+  margin-top: 1.6mm;
+  text-indent: 8mm;
+}
+
+.inspection-line {
+  margin-top: 1.5mm;
+}
+
+.special-line {
+  margin-top: 1.2mm;
+  text-align: center;
+}
+
+.cancel-line {
+  margin-top: 1.2mm;
+  text-indent: 9mm;
+}
+
+.head-title {
+  margin-top: 5mm;
+  padding-left: 107mm;
+  font-weight: 700;
+}
+
+.signature-row {
+  display: grid;
+  grid-template-columns: 23mm 43mm 1fr 61mm;
+  align-items: start;
+  margin-top: 4mm;
+  font-size: 12pt;
+}
+
+.stamp {
+  grid-column: 1;
+  padding-top: 1mm;
+  font-weight: 700;
+}
+
+.signature-line {
+  grid-column: 2;
+  text-align: center;
+}
+
+.name-line {
+  grid-column: 4;
+  text-align: center;
+  font-weight: 700;
+}
+
+.standard-field {
+  font-size: 14pt;
+  font-weight: 700;
+}
+
+.fit-sm {
+  font-size: 10.5pt;
+}
+
+.fit-xs {
+  font-size: 9.2pt;
 }
 
 .cert-justify {
@@ -130,8 +299,10 @@ body {
   }
 
   .certificate-overlay,
+  .word-certificate-overlay,
   .cert-box,
-  .cert-underline {
+  .cert-underline,
+  .word-field {
     color: #000 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
