@@ -17,7 +17,7 @@ import {
   formToLegacyCertificatePayload,
   formToRegistryRow,
 } from '@/lib/certificateTypes';
-import CertificateEditor from './components/CertificateEditor';
+import WordDocxPreview from './components/WordDocxPreview';
 import { describeSupabaseError, getSupabaseConfigError, isMissingSchemaColumnError, supabase } from '@/lib/supabase';
 import * as XLSX from 'xlsx';
 import { applyAutoReplace, initAutoReplacements } from '@/lib/autoReplace';
@@ -107,7 +107,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
   const [printing, setPrinting] = useState(false);
-  const [previewBackground, setPreviewBackground] = useState(false);
 
   const [templates, setTemplates] = useState<CertTemplate[]>([]);
   const [showTemplatesPanel, setShowTemplatesPanel] = useState(false);
@@ -386,13 +385,6 @@ export default function Home() {
           </button>
 
           <button
-            onClick={() => setPreviewBackground(value => !value)}
-            className="rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
-          >
-            {previewBackground ? 'Скрыть фон бланка' : 'Показать фон бланка'}
-          </button>
-
-          <button
             onClick={handlePrint}
             disabled={printing}
             className="rounded-md bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-800 disabled:opacity-60"
@@ -548,8 +540,8 @@ export default function Home() {
           </aside>
 
           <section className="min-w-0 overflow-auto">
-            <div id="print-area-wrapper" className="mx-auto w-fit border border-slate-300 bg-white shadow-xl">
-              <CertificateEditor formData={formData} previewBackground={previewBackground} />
+            <div id="print-area-wrapper" className="mx-auto w-fit overflow-hidden border border-slate-300 bg-white shadow-xl">
+              <WordDocxPreview formData={formData} />
             </div>
           </section>
         </div>

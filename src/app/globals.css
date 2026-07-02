@@ -225,6 +225,28 @@ body {
   font-size: 9.2pt;
 }
 
+.word-preview-shell {
+  width: min(100vw - 420px, 920px);
+  min-width: 720px;
+  background: #f8fafc;
+}
+
+.word-docx-preview {
+  min-height: 900px;
+  padding: 24px;
+  overflow: auto;
+}
+
+.word-docx-preview .docx-wrapper {
+  background: #f1f5f9;
+  padding: 24px;
+}
+
+.word-docx-preview .docx {
+  margin: 0 auto 24px !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+}
+
 .cert-justify {
   text-align: justify;
   text-justify: inter-word;
@@ -284,14 +306,31 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 210mm;
-    height: 297mm;
+    width: auto;
+    height: auto;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     background: #fff !important;
     box-shadow: none !important;
     border: none !important;
+  }
+
+  .word-preview-shell,
+  .word-docx-preview,
+  .word-docx-preview .docx-wrapper {
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .word-docx-preview .docx {
+    margin: 0 !important;
+    box-shadow: none !important;
   }
 
   .certificate-preview-bg {
