@@ -23,9 +23,12 @@ function loadScript(src: string) {
   return new Promise<void>((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
     if (existing) {
-      if (window.DocsAPI) resolve();
+      if (window.DocsAPI) {
+        resolve();
+        return;
+      }
       existing.addEventListener('load', () => resolve(), { once: true });
-      existing.addEventListener('error', () => reject(new Error('ONLYOFFICE script failed to load')), { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Не удалось загрузить ONLYOFFICE script: ${src}`)), { once: true });
       return;
     }
 
@@ -33,7 +36,7 @@ function loadScript(src: string) {
     script.src = src;
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error('ONLYOFFICE script failed to load'));
+    script.onerror = () => reject(new Error(`Не удалось загрузить ONLYOFFICE script: ${src}`));
     document.body.appendChild(script);
   });
 }
@@ -41,6 +44,7 @@ function loadScript(src: string) {
 export default function OnlyOfficeTemplateEditor() {
   const editorRef = useRef<{ destroyEditor?: () => void } | null>(null);
   const [documentKey, setDocumentKey] = useState('');
+  const [scriptUrl, setScriptUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -61,9 +65,12 @@ export default function OnlyOfficeTemplateEditor() {
           throw new Error(payload.error || 'Не удалось получить конфигурацию ONLYOFFICE.');
         }
 
-        await loadScript(`${payload.documentServerUrl}/web-apps/apps/api/documents/api.js`);
+        const nextScriptUrl = `${payload.documentServerUrl}/web-apps/apps/api/documents/api.js`;
+        setScriptUrl(nextScriptUrl);
+        await loadScript(nextScriptUrl);
+
         if (cancelled) return;
-        if (!window.DocsAPI) throw new Error('ONLYOFFICE DocsAPI не загрузился.');
+        if (!window.DocsAPI) throw new Error('ONLYOFFICE DocsAPI не загрузился после подключения script.');
 
         editorRef.current?.destroyEditor?.();
         editorRef.current = new window.DocsAPI.DocEditor('onlyoffice-template-editor', payload.config);
@@ -130,7 +137,23 @@ export default function OnlyOfficeTemplateEditor() {
         </button>
       </div>
 
-      {error && <div className="no-print border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{error}</div>}
+      {error && (
+        <div className="no-print border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-800">
+          <div className="font-semibold">{error}</div>
+          {scriptUrl && (
+            <div className="mt-2 space-y-1 text-xs leading-5">
+              <div>
+                Проверь, что этот URL открывается в браузере:{' '}
+                <a href={scriptUrl} target="_blank" rel="noreferrer" className="font-mono underline">
+                  {scriptUrl}
+                </a>
+              </div>
+              <div>Если он не открывается, в Vercel указан не Document Server URL или ONLYOFFICE недоступен публично.</div>
+              <div>Если сайт на Vercel работает по HTTPS, ONLYOFFICE URL тоже должен быть HTTPS.</div>
+            </div>
+          )}
+        </div>
+      )}
       {loading && <div className="no-print border-b border-blue-100 bg-blue-50 px-5 py-3 text-sm text-blue-700">Загружаю ONLYOFFICE...</div>}
 
       <div id="onlyoffice-template-editor" className="min-h-0 flex-1 bg-white" />
