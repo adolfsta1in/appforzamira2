@@ -261,6 +261,34 @@ export default function Home() {
     XLSX.writeFile(wb, 'reestr_shahodatnoma.xlsx');
   }, [formData]);
 
+  const downloadDocx = useCallback(async () => {
+    setError(null);
+    try {
+      const response = await fetch('/api/certificate-docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Не удалось создать DOCX.');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${(formData.certificateNumber || 'shahodatnoma').replace(/[\\/:*?"<>|]/g, '_')}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError('Ошибка создания DOCX: ' + describeSupabaseError(err));
+    }
+  }, [formData]);
+
   const handlePrint = useCallback(async () => {
     setPrinting(true);
     const savedBeforePrint = await saveToRegistry();
@@ -393,6 +421,13 @@ export default function Home() {
             className="rounded-md bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-800"
           >
             Excel
+          </button>
+
+          <button
+            onClick={downloadDocx}
+            className="rounded-md bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
+          >
+            Скачать DOCX
           </button>
 
           <button
