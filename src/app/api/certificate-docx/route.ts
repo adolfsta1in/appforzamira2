@@ -1,12 +1,9 @@
-import path from 'path';
-import { promises as fs } from 'fs';
 import { NextResponse } from 'next/server';
 import PizZip from 'pizzip';
 import { CertificateFormData, DEFAULT_HEAD_NAME, DEFAULT_INSPECTION_BODY, DEFAULT_STANDARD, formatDateForText, parseDateParts } from '@/lib/certificateTypes';
+import { getOnlyOfficeTemplateBuffer } from '@/lib/onlyoffice';
 
 export const dynamic = 'force-dynamic';
-
-const TEMPLATE_PATH = path.join(process.cwd(), 'public', 'onlyoffice', 'shahodatnoma-template.docx');
 
 function escapeXml(value: string) {
   return value
@@ -34,10 +31,42 @@ function normalizeServiceType(value: string) {
   return value.trim();
 }
 
+function placeholderValues(data: CertificateFormData) {
+  const issue = parseDateParts(data.issueDate);
+  const validTo = parseDateParts(data.validTo);
+
+  return {
+    certificateNumber: data.certificateNumber || '',
+    applicationNumber: data.applicationNumber || '',
+    organizationName: data.organizationName || '',
+    address: data.address || '',
+    entrepreneurName: data.entrepreneurName || '',
+    serviceType: normalizeServiceType(data.serviceType || ''),
+    patentNumber: data.patentNumber || '',
+    issueDate: data.issueDate || '',
+    validTo: data.validTo || '',
+    conclusionDate: data.conclusionDate || '',
+    conclusionText: [formatDateForText(data.conclusionDate).replace(/с\.$/, 'с.'), data.applicationNumber ? `№ ${data.applicationNumber}` : '']
+      .filter(Boolean)
+      .join(' '),
+    standard: data.standard || DEFAULT_STANDARD,
+    inspectionBody: data.inspectionBody || DEFAULT_INSPECTION_BODY,
+    headName: data.headName || DEFAULT_HEAD_NAME,
+    inspectorName: data.inspectorName || '',
+    amount: data.amount || '',
+    issueDay: issue.day || '',
+    issueMonth: issue.month || '',
+    issueYear: issue.year || '',
+    validToDay: validTo.day || '',
+    validToMonth: validTo.month || '',
+    validToYear: validTo.year || '',
+  };
+}
+
 export async function POST(request: Request) {
   const data = (await request.json()) as CertificateFormData;
-  const template = await fs.readFile(TEMPLATE_PATH);
-  const zip = new PizZip(template);
+  const template = await getOnlyOfficeTemplateBuffer();
+  const zip = new PizZip(template.buffer);
   const document = zip.file('word/document.xml');
 
   if (!document) {
@@ -45,6 +74,11 @@ export async function POST(request: Request) {
   }
 
   let xml = document.asText();
+  const values = placeholderValues(data);
+
+  for (const [key, value] of Object.entries(values)) {
+    xml = replaceAll(xml, `{{${key}}}`, value);
+  }
 
   xml = replaceFirst(xml, '« 26 »        июни        2026 с.', tajikDateText(data.issueDate));
   xml = replaceFirst(xml, '« 26 »        июни       2027 с.', tajikDateText(data.validTo));

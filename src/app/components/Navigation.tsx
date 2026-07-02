@@ -8,6 +8,7 @@ export default function Navigation() {
 
   const links = [
     { href: '/', label: 'Новое свидетельство' },
+    { href: '/template', label: 'Шаблон Word' },
     { href: '/registry', label: 'Реестр' },
   ];
 

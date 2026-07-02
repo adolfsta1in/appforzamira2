@@ -1,7 +1,7 @@
-import OnlyOfficeTemplateEditor from '../components/OnlyOfficeTemplateEditor';
+import WordTemplateManager from '../components/WordTemplateManager';
 
 export const dynamic = 'force-dynamic';
 
 export default function TemplatePage() {
-  return <OnlyOfficeTemplateEditor />;
+  return <WordTemplateManager />;
 }
