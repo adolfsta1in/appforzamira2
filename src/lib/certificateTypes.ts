@@ -51,6 +51,7 @@ export interface CertificateDbRow {
   head_name: string | null;
 }
 
+export const DEFAULT_CERTIFICATE_NUMBER = '№TJ.762.37100.01.016 – 2025';
 export const DEFAULT_STANDARD = 'СТ ҶТ 1037-2001';
 export const DEFAULT_INSPECTION_BODY = 'Тоҷикстандарт';
 export const DEFAULT_HEAD_NAME = 'Рахмон И.Х.';
@@ -60,7 +61,7 @@ export const FORM_DRAFT_KEY = 'cert_form_draft_v3';
 export const FORM_DRAFT_VERSION = '3';
 
 export const EMPTY_FORM_DATA: CertificateFormData = {
-  certificateNumber: '',
+  certificateNumber: DEFAULT_CERTIFICATE_NUMBER,
   applicationNumber: '',
   organizationName: '',
   address: '',
@@ -297,7 +298,7 @@ export function dbRowToFormData(row: Partial<CertificateDbRow>): CertificateForm
     ...EMPTY_FORM_DATA,
     ...packedData,
     id: row.id,
-    certificateNumber: row.cert_number || packedData.certificateNumber || '',
+    certificateNumber: row.cert_number || packedData.certificateNumber || DEFAULT_CERTIFICATE_NUMBER,
     applicationNumber: row.application_number || packedData.applicationNumber || '',
     organizationName: row.recipient_name || row.provider_name_address || packedData.organizationName || '',
     address: row.recipient_address || packedData.address || '',

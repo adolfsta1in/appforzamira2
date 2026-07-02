@@ -226,7 +226,7 @@ body {
 }
 
 .word-preview-shell {
-  width: min(100vw - 420px, 920px);
+  width: min(100vw - 48px, 980px);
   min-width: 720px;
   background: #f8fafc;
 }

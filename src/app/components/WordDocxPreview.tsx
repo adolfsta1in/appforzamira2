@@ -64,8 +64,8 @@ export default function WordDocxPreview({ formData }: Props) {
     <div className="word-preview-shell">
       <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2">
         <div>
-          <h2 className="text-sm font-bold text-slate-950">Предпросмотр Word-шаблона</h2>
-          <p className="text-xs text-slate-500">Это настоящий DOCX после подстановки полей, а не старый HTML-сертификат.</p>
+          <h2 className="text-sm font-bold text-slate-950">Предпросмотр Word-документа</h2>
+          <p className="text-xs text-slate-500">Ниже отображается настоящий DOCX после подстановки полей.</p>
         </div>
         {loading && <span className="text-xs font-semibold text-blue-700">Обновляю...</span>}
       </div>

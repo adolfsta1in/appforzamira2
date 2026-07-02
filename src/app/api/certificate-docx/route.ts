@@ -31,6 +31,10 @@ function normalizeServiceType(value: string) {
   return value.trim();
 }
 
+function withoutNumberSign(value: string) {
+  return value.replace(/^№\s*/, '');
+}
+
 function placeholderValues(data: CertificateFormData) {
   const issue = parseDateParts(data.issueDate);
   const validTo = parseDateParts(data.validTo);
@@ -82,7 +86,7 @@ export async function POST(request: Request) {
 
   xml = replaceFirst(xml, '« 26 »        июни        2026 с.', tajikDateText(data.issueDate));
   xml = replaceFirst(xml, '« 26 »        июни       2027 с.', tajikDateText(data.validTo));
-  xml = replaceAll(xml, 'TJ.762.37100.01.016', data.certificateNumber || '');
+  xml = replaceAll(xml, 'TJ.762.37100.01.016', withoutNumberSign(data.certificateNumber || ''));
   xml = replaceAll(xml, 'Дукони фурӯши техникаи маишӣ', data.organizationName || '');
   xml = replaceAll(xml, 'шаҳри Душанбе, ноҳияи Фирдавсӣ, кӯчаи Миралӣ 1', data.address || '');
   xml = replaceAll(xml, 'Ғиёсова С.', data.entrepreneurName || '');
